@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Time Capsule</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Fonts (optional) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=PT+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">      <!-- main site styles (has footer) -->
+<link rel="stylesheet" href="capsule.css">     <!-- time capsules page styles -->
+  <!-- Load JS with defer so it runs after HTML is parsed -->
+  <script src="./capsule.js" defer></script>
+</head>
+<header class="capsule-nav">
+  <a class="nav-back" href="index.html">← Back to The Ordinaries</a>
+</header>
+<body>
+  <div id="capsule-after-divider" aria-hidden="true"></div>
+
+  <main class="viz-wrap">
+    <section class="capsule-area" id="capsule-section">
+      <div class="capsule-header-top">
+        <div class="capsule-headings">
+          <h2 class="section-title">Artifacts of the everyday</h2>
+          <p class="capsule-subtitle">Browse through material remnants of use and habit — preserved by care or by chance.</p>
+        </div>
+
+        <div class="capsule-cta">
+        <button type="button" class="btn capsule-start-btn" id="start-capsule-btn">
+          Build Your Time Capsule
+        </button>
+          <p id="capsule-hint" class="capsule-hint">
+            Select up to five objects to carry forward — traces of what people used, made, kept, or left behind.
+          </p>
+        </div>
+      </div>
+
+      <!-- Summary (hidden until 5 items selected) -->
+      <section id="capsule-output" class="capsule-summary" hidden>
+        <div class="capsule-header">
+          <div>
+            <p class="capsule-eyebrow">Your Time Capsule</p>
+            <h3>Remnants of a Life</h3>
+          </div>
+          <div class="capsule-actions">
+            <button type="button" class="btn-ghost" id="start-over-btn">✕ Close</button>
+            <button type="button" class="btn-ghost" id="share-capsule-btn">Share</button>
+          </div>
+
+        </div>
+
+        <div class="capsule-selected"></div>
+        <hr class="divider">
+        <div class="capsule-row">
+          <p class="capsule-label">COLOR PALETTE</p>
+          <div class="swatches">
+            <div class="swatch" style="background-color:#8B5A2B;"></div>
+            <div class="swatch" style="background-color:#3B4E58;"></div>
+            <div class="swatch" style="background-color:#A39171;"></div>
+            <div class="swatch" style="background-color:#6D6D6D;"></div>
+            <div class="swatch" style="background-color:#E0D6C1;"></div>
+          </div>
+        </div>
+        <!-- Origins row -->
+        <div class="capsule-row">
+        <p class="capsule-label">ORIGINS</p>
+        <div class="chips">
+            <span class="chip">France</span>
+            <span class="chip">United Kingdom</span>
+        </div>
+        </div>
+
+        <!-- Materials row -->
+        <div class="capsule-row">
+        <p class="capsule-label">MAIN MATERIALS</p>
+        <div class="chips">
+            <span class="chip">Silver</span>
+            <span class="chip">Silk</span>
+            <span class="chip">Wood</span>
+        </div>
+        </div>
+
+        <!-- Uses / Actions row -->
+        <div class="capsule-row">
+        <p class="capsule-label">WHAT WERE THESE OBJECTS USED FOR?</p>
+        <div class="chips">
+            <span class="chip">Dressing &amp; Accessorizing</span>
+            <span class="chip">Fighting &amp; Hunting</span>
+            <span class="chip">Reading, Writing &amp; Recording</span>
+        </div>
+        </div>
+
+      </section>
+
+      <!-- GRID: you must have cards inside this div -->
+      <div id="capsule-grid" class="capsule-grid">
+        <!-- Card 1 -->
+        <div class="card">
+          <label class="card-select"><input class="card-check" type="checkbox" /></label>
+          <img src="./cards/sampler.png"
+               alt="Betsy Bucklin’s 1781 needlework sampler from Providence, with a house, floral borders, and stitched verse.">
+          <h4 class="card-title">
+            <a href="https://collections.si.edu/search/detail/edanmdm:nmah_1341531" target="_blank" rel="noopener">
+              Betsy Bucklin’s 1781 sampler
+            </a>
+          </h4>
+          <p class="card-text">
+            A linen sampler stitched in silk by a New England schoolgirl, featuring a verse in praise of George Washington.
+          </p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card">
+          <label class="card-select"><input class="card-check" type="checkbox" /></label>
+          <img src="./cards/unidentified-virgen.png"
+               alt="Small carved wooden Virgin-and-Child santo from 18th-century Puerto Rico.">
+          <h4 class="card-title">
+            <a href="https://collections.si.edu/search/detail/edanmdm:nmah_1317029" target="_blank" rel="noopener"
+               aria-label="Wooden Virgin-and-Child santo (18th-century Puerto Rico)">
+              18th-century Puerto Rican santo
+            </a>
+          </h4>
+          <p class="card-text">
+            A small carved Virgin-and-Child figure once kept in Puerto Rican households for daily devotion.
+          </p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card">
+          <label class="card-select"><input class="card-check" type="checkbox" /></label>
+          <img src="./cards/fire-hat.png"
+               alt="Early-19th-century pressed-felt stovepipe parade hat painted red with a fire-company emblem.">
+          <h4 class="card-title">
+            <a href="https://collections.si.edu/search/detail/edanmdm:nmah_1318715" target="_blank" rel="noopener"
+               aria-label="Parade hat of the Allegheny volunteer firemen (1807-1850)">
+              Parade hat of the Allegheny firemen (1807–1850)
+            </a>
+          </h4>
+          <p class="card-text">
+            A hand-painted hat worn by volunteers of the Allegheny Engine Co., used in service at fires and carried with pride in civic parades.
+          </p>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card">
+          <label class="card-select"><input class="card-check" type="checkbox" /></label>
+          <img src="./cards/courting-mirror.png"
+               alt="Early-19th-century courting mirror with painted crest and rectangular glass.">
+          <h4 class="card-title">
+            <a href="https://collections.si.edu/search/detail/edanmdm:nmah_308141" target="_blank" rel="noopener"
+               aria-label="Courting mirror, New England, c. 1800">
+              Courting mirror (c. 1800)
+            </a>
+          </h4>
+          <p class="card-text">
+            A painted wooden mirror, given by a suitor to a prospective partner in New England as a sign of affection and promise.
+          </p>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="card">
+          <label class="card-select"><input class="card-check" type="checkbox" /></label>
+          <img src="./cards/tavern-sign.png"
+               alt="Carved and painted wooden tavern sign with a fleur-de-lis, framed for hanging.">
+          <h4 class="card-title">
+            <a href="https://collections.si.edu/search/detail/edanmdm:nmah_661987" target="_blank" rel="noopener"
+               aria-label="Tavern Sign, carved and painted wood, c. 1770">
+              Tavern Sign (1770)
+            </a>
+          </h4>
+          <p class="card-text">
+            A carved wooden sign that marked a roadside inn and guided travelers along early American routes.
+          </p>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="card">
+          <label class="card-select"><input class="card-check" type="checkbox" /></label>
+          <img src="./cards/postal.png"
+               alt="Printed 1773 postmaster’s bill from the Philadelphia Post Office with columns and ink annotations.">
+          <h4 class="card-title">
+            <a href="https://collections.si.edu/search/detail/edanmdm:npm_2025.2004.9" target="_blank" rel="noopener"
+               aria-label="Postmaster’s bill from the Philadelphia post office (1773)">
+              Postmaster’s bill (1773)
+            </a>
+          </h4>
+          <p class="card-text">
+            A printed sheet tracking three letters leaving Philadelphia for Rhode Island, a trace of news and private words on the eve of revolution.
+          </p>
+        </div>
+
+        <!-- Card 7 -->
+        <div class="card">
+          <label class="card-select"><input class="card-check" type="checkbox" /></label>
+          <img src="./cards/drug-jar.png"
+               alt="Late-18th-century ceramic apothecary jar labeled for quassia bark.">
+          <h4 class="card-title">
+            <a href="https://collections.si.edu/search/detail/edanmdm:nmah_994542" target="_blank" rel="noopener"
+               aria-label="Apothecary jar for quassia bark, about 1790–1810">
+              Apothecary jar (c. 1790–1810)
+            </a>
+          </h4>
+          <p class="card-text">
+            A ceramic apothecary jar that held bitter-wood bark prepared as a household tonic to reduce fevers.
+          </p>
+        </div>
+
+        <!-- Card 8 -->
+        <div class="card">
+          <label class="card-select"><input class="card-check" type="checkbox" /></label>
+          <img src="./cards/viola-damore.png"
+               alt="Viola d’amore with dark varnish, carved head, and 19th-century alterations.">
+          <h4 class="card-title">
+            <a href="https://collections.si.edu/search/detail/edanmdm:nmah_605616" target="_blank" rel="noopener"
+               aria-label="Viola d’amore (18th-century body, 19th-century alterations)">
+              Viola d’amore (18th c., altered)
+            </a>
+          </h4>
+          <p class="card-text">
+            An 18th-century viola d’amore, believed re-assembled in the late 1800s by Leopoldo Franciolini — an Italian dealer infamous for his faked antique instruments.
+          </p>
+        </div>
+
+        <!-- Card 9 -->
+        <div class="card">
+          <label class="card-select"><input class="card-check" type="checkbox" /></label>
+          <img src="./cards/mourning-lock.png"
+               alt="Oval mourning locket with watercolor miniature of a grieving figure beneath a willow tree beside a funerary urn.">
+          <h4 class="card-title">
+            <a href="https://collections.si.edu/search/detail/edanmdm:saam_1938.7.1" target="_blank" rel="noopener"
+               aria-label="Mourning locket for A. R. (c. 1780)">
+              Mourning locket for A.R. (c. 1780)
+            </a>
+          </h4>
+          <p class="card-text">
+            A small locket marked “A. R.”, carried as an intimate token of grief.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+<!-- =========================
+     FOOTER (About / sources)
+     ========================= -->
+<footer id="about" class="site-footer" aria-labelledby="about-title">
+  <div class="footer-inner">
+    <div class="footer-text">
+      <h2 id="about-title">About this project</h2>
+      <p><em>The Ordinaries</em> looks at the American Revolutionary era (1765–1783) through the material traces of everyday life, 
+        drawing on objects from the Smithsonian’s collections — from cooking pots and card games to stitched samplers and nursing bottles.</p>
+
+      <div class="footer-meta">
+        <span class="data-badge">
+          Data source: <a href="https://www.si.edu/openaccess" target="_blank" rel="noopener">Smithsonian Open Access</a>
+        </span>
+      </div>
+    </div>
+
+    <figure class="footer-figure" aria-hidden="true">
+      <!-- Make sure the path matches how it's referenced on the main page -->
+      <img src="assets/flowers.png" alt="" role="presentation">
+    </figure>
+  </div>
+</footer>
+
+</body>
+</html>

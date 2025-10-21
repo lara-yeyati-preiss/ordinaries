@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Ordinaries — Prelude</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- D3 for treemap -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+
+  <!-- tooltip (kept outside scrollers so it can float everywhere) -->
+  <div class="treemap-tooltip" id="treemap-tooltip" aria-hidden="true"></div>
+
+  <!-- =========================
+       SCROLL CONTAINER
+       ========================= -->
+  <div id="scrollContainer" class="prelude-scrolly-container">
+    <div class="scrolly-track">
+
+      <!-- sticky viewport that stays put while the track scrolls -->
+      <div class="scrolly-viewport">
+        <!-- background layer the JS toggles between plain and grid -->
+        <div id="viewportBg" class="viewport-bg"></div>
+
+        <!-- ===== HERO ===== -->
+        <section class="hero-landing" id="heroSection" aria-label="Hero">
+          <div class="hero-inner">
+            <div class="hero-title-row">
+              <h1 class="hero-title">The Ordinaries</h1>
+              <div class="hero-image-wrap">
+                <img src="assets/ordinaries.png" alt="Embroidered flowers" style="max-width:70%;margin:.5rem auto 1rem;opacity:.75">
+              </div>
+            </div>
+
+            <p class="hero-subtitle">
+              Everyday objects of the American Revolutionary period—built, gambled, mended, mourned.
+              These are the remnants of the ordinary.
+            </p>
+
+            <!-- grouping all hero action buttons -->
+            <div class="hero-actions">
+              <button class="btn btn-dark" id="heroBtnObjects">Objects by Use</button>
+              <a href="time-capsules.html" class="btn btn-dark" id="heroBtnTimeCapsules">Time Capsules</a>
+              <button class="btn btn-outline" id="heroBtnAbout">What is this?</button>
+            </div>
+
+            <!-- scroll down indicator that takes you to first scene -->
+            <button class="scroll-indicator" id="scrollIndicator" aria-label="Scroll to begin">
+              <span class="scroll-text">Scroll</span>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#525252" stroke-width="2" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- creating an empty div used as the anchor for the first scrolling step -->
+        <div id="firstStepAnchor"></div>
+
+        <!-- creating the container where js will inject all scroll steps dynamically -->
+        <div id="stepsContainer" aria-live="polite"></div>
+      </div><!-- closing the scrolly-viewport -->
+
+    </div><!-- closing the scrolly track -->
+  </div><!-- closing the scrollContainer -->
+
+      <!-- =========================
+           FOOTER (About / sources)
+           it scrolls in after the treemap
+           ========================= -->
+      <footer id="about" class="site-footer" aria-labelledby="about-title">
+        <div class="footer-inner">
+          <div class="footer-text">
+            <h2 id="about-title">About this project</h2>
+            <p><em>The Ordinaries</em> looks at the American Revolutionary era (1765–1783) through the
+              material traces of everyday life, drawing on objects from the Smithsonian’s collections —
+              from cooking pots and card games to stitched samplers and nursing bottles.</p>
+
+            <div class="footer-meta">
+              <span class="data-badge">
+                Data source: <a href="https://www.si.edu/openaccess" target="_blank" rel="noopener">Smithsonian Open Access</a>
+              </span>
+            </div>
+          </div>
+
+          <figure class="footer-figure" aria-hidden="true">
+            <img src="assets/flowers.png" alt="" role="presentation">
+          </figure>
+        </div>
+      </footer>
+  <!-- defining the up-arrow button that brings the user back to the top (JS toggles visibility) -->
+  <button class="sticky-up-arrow" id="upArrow" aria-label="Scroll to top">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </button>
+
+  <!-- loading main javascript files after all html to ensure proper initialization -->
+  <script src="app.js"></script>
+  <script src="treemap.js"></script>
+</body>
+</html>

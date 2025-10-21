@@ -1,0 +1,712 @@
+
+/* ============================================================================
+   BASE / TOKENS
+   ===========================================================================*/
+:root{
+  --contentMaxW: 1200px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { font-size:16px; }
+body {
+  font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  background:#f6f3ef; color:#23201d; overflow-x:hidden;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; letter-spacing:-0.008em;
+}
+
+/* ============================================================================
+   SCROLL CONTAINER + TRACK
+   ===========================================================================*/
+/* main scroller */
+.prelude-scrolly-container {
+  height: 100vh;                         /* giving the inner scroller a full-viewport height */
+  overflow: auto;                         /* enabling scroll inside this container (not the page) */
+  overscroll-behavior-y: contain;         /* preventing page bounce when reaching top/bottom of inner scroller */
+  overscroll-behavior-x: none;
+  -webkit-overflow-scrolling: touch;      /* keeping momentum scrolling on iOS */
+}
+/* JS will compute an exact min-height based on segments; this gives a large default runway */
+.scrolly-track { position:relative; min-height:700vh; } /* JS will set exact height */
+.scrolly-viewport {
+  position:sticky; top:0; height:100vh; display:flex; align-items:center; justify-content:center; z-index:5;
+  /* making the viewport sticky so content “swaps” inside a fixed frame while the track scrolls behind it */
+}
+.viewport-bg { position:absolute; inset:0; background:#E8E6E1; z-index:-1; transition:background .6s ease; pointer-events:none; }
+/* overall viewport background for the grid scenes */
+.viewport-bg.grid-bg {
+  background-color: #f9f8f5;
+  background-image:
+    /* drawing horizontal lines: a 1px tinted line every 16px */
+    repeating-linear-gradient(
+      0deg,
+      rgba(180,200,230,0.05) 0px,
+      rgba(180,200,230,0.05) 1px,
+      transparent 1px,
+      transparent 16px
+    ),
+    /* drawing vertical lines: a 1px tinted line every 16px */
+    repeating-linear-gradient(
+      90deg,
+      rgba(180,200,230,0.05) 0px,
+      rgba(180,200,230,0.05) 1px,
+      transparent 1px,
+      transparent 16px
+    );
+}
+
+/* ============================================================================
+   HERO (visible only in 'hero' segment; JS toggles .hidden)
+   ===========================================================================*/
+.hero-landing{
+  position:absolute; width:100%; min-height:100vh;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:clamp(12px,2vh,28px);
+  background:#E4E1DD; transition:opacity .6s ease;
+  /* layering the hero on top of the sticky viewport content and letting it fade out when scrolly starts */
+}
+.hero-landing.hidden{ opacity:0; pointer-events:none; }
+.hero-inner{ width:100%; max-width:720px; padding:0 14px; text-align:center; margin:0 auto; display:flex; flex-direction:column; align-items:center; }
+.hero-title-row{ display:flex; flex-direction:column; align-items:center; gap:.15em; margin-bottom:14px; max-width:640px; margin-inline:auto; }
+.hero-title {
+  font-family: 'EB Garamond', Garamond, serif;
+  font-weight: 400;
+  font-size: clamp(58px, 7vw, 80px);      /* scaling headline responsively but bounding it with clamp(min, preferred, max) */
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  color: #1a1a1a;
+  margin-bottom: 0.8rem;
+  cursor: default;
+}
+.hero-subtitle {
+  margin: .8rem auto 1.4rem;
+  max-width: 56ch;                       /* keeping readable line length */
+  font-size: clamp(1.18rem, 1.9vw, 1.32rem);
+  line-height: 1.45;
+  color: #2b2b2b;
+}
+.scroll-indicator {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;                 /* stacking “scroll” label above chevron */
+  align-items: center;
+  gap: 8px;
+  opacity: .6;
+  cursor: pointer;
+  transition: opacity .2s ease;
+  border: 0;
+  background: none;
+}
+.scroll-indicator:hover { opacity: 1; }
+.scroll-text {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: #131313;
+}
+
+/* === HERO actions (buttons under subtitle) === */
+.hero-actions{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:center;
+  margin-top:.4rem;
+  flex-wrap:wrap;                          /* allowing wrap so buttons don’t overflow on small widths */
+}
+.btn{
+  appearance:none;
+  border-radius:999px;                      /* forcing pill shape regardless of height */
+  padding:8px 14px;
+  font-size:15px;
+  letter-spacing:.01em;
+  cursor:pointer;
+  border:1px solid transparent;
+  transition:transform .06s ease, box-shadow .2s ease, background .2s ease, color .2s ease, border-color .2s ease;
+}
+.btn-dark{ background:#1f1f1f; color:#fff; border-color:#1f1f1f; text-decoration: none;}
+.btn-dark:hover{ transform:translateY(-1px); }  /* giving a tiny hover lift */
+.btn-outline{ background:transparent; color:#1f1f1f; border-color:#2c2c2c; }
+.btn-outline:hover{ background:#1f1f1f; color:#fff; }
+/* disabled state */
+.btn[aria-disabled="true"], .btn:disabled{ opacity:.55; cursor:default; pointer-events:none; }
+
+/* ============================================================================
+   STEP WRAPPER + CARDS
+   ===========================================================================*/
+.scrolly-step{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding:0 24px;
+  opacity:0; transition:opacity .6s ease; pointer-events:none;
+  /* laying each step full-viewport and using opacity to swap; pointer-events ensures hidden steps don’t eat clicks */
+}
+.scrolly-step.active{ opacity:1; pointer-events:auto; }
+
+.prelude-card{
+  position:relative; background:#fff; border-radius:8px; max-width:52ch;
+  box-shadow:0 2px 12px rgba(0,0,0,.07); border:1px solid #eceae7; padding:38px 36px;
+  display:flex; flex-direction:column; align-items:center; text-align:center; transition:opacity .6s ease;
+}
+.prelude-card p{ font-size:18px; line-height:1.65; color:#2f2f2f; letter-spacing:-.01em; }
+.card-image{ height:100px; width:auto; opacity:.7; margin-top:1em; display:block; }
+
+/* ============================================================================
+   SAMPLER INTRO (image trio + text)
+   ===========================================================================*/
+/* lowering the whole sampler-intro scene to sit slightly below center */
+.sampler-intro-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+
+  /* pushing content slightly lower so the gallery sits in a more balanced position */
+  margin-top: 6vh;
+  gap: 3vh;
+}
+
+/* ensuring the intro text card doesn’t hug the top edge */
+.sampler-intro-card {
+  margin-bottom: 10vh;
+}
+
+.sampler-gallery{ display:flex; gap:24px; align-items:center; justify-content:center; flex-wrap:wrap; transform:translateY(-8vh); }
+.sampler-item{ opacity:0; transform:scale(.8); transition:opacity .6s ease, transform .6s ease; }
+.sampler-item.visible{ opacity:1; transform:scale(1); }
+.sampler-item img{ height:clamp(420px,52vh,580px); width:auto; object-fit:contain; display:block; filter:drop-shadow(0 2px 8px rgba(0,0,0,.1)); }
+
+/* ============================================================================
+   COMPARTMENT (big image + label + progress)
+   ===========================================================================*/
+.compartment-container{
+  position:absolute; width:100%; height:100%; display:flex; align-items:center; justify-content:center; gap:40px; padding:0 24px; max-width:1400px;
+  /* pinning the whole scene to the viewport so the cross-fade behaves like a single-page view */
+}
+.sampler-viewport{
+  flex:1; height:85vh; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#f6f3ef; border-radius:4px; position:relative;
+}
+.viewport-image{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .45s ease;
+  /* stacking each image in the same spot and fading between them via opacity */
+}
+/* rendering images slightly larger than the viewport to reduce letterboxing */
+.viewport-image img{
+  width:auto;
+  height:100%;
+  max-width:none;
+  max-height:none;
+  object-fit:contain;
+}
+.viewport-label{
+  position:absolute; bottom:20px; left:50%; transform:translateX(-50%); /* centering horizontally by shifting back half width */
+  padding:8px 16px; background:rgba(255,255,255,.9); border-radius:20px;
+  font-size:13px; font-weight:500; letter-spacing:.05em; text-transform:uppercase; color:#2a2a2a; pointer-events:none;
+}
+.compartment-card{ flex:0 0 400px; max-width:400px; }
+.progress-bar{ margin-top:24px; width:100%; height:2px; background:#e0e0e0; border-radius:1px; overflow:hidden; }
+.progress-fill{ height:100%; background:#bbb9b9; width:0%; transition:width .1s linear; }
+
+/* image-level arrows INSIDE the sampler viewport */
+.img-arrow{
+  position:absolute; top:50%; transform:translateY(-50%); /* anchoring at 50% and pulling up by half height for true vertical centering */
+  width:42px; height:42px; border-radius:999px;
+  border:1px solid #d0d0d0; background:rgba(255,255,255,.9);
+  color:#1f1f1f; font-size:20px; display:grid; place-items:center;
+  cursor:pointer; opacity:.7; transition:opacity .2s, transform .2s; z-index:5;
+}
+.img-arrow:hover{ opacity:1; transform:translateY(-50%) scale(1.03); }
+.img-arrow-left{ left:12px; }
+.img-arrow-right{ right:12px; }
+@media (max-width:520px){ .img-arrow{ display:none; } }
+
+/* ============================================================================
+   OBJECT GRID (7 columns × 3 rows) + subtle selector
+   ===========================================================================*/
+
+/* wrapper governs width for both the card and the grid; sizing columns by tokens */
+.object-grid-step .grid-wrapper{
+  position: relative;
+  /* tile sizing tokens */
+  --tileMin: 110px;
+  --tileMax: 160px;
+  --gap: 10px;
+
+  /* calculating max width for 7 columns + 6 gaps; then limiting by viewport */
+  max-width: calc(7 * var(--tileMax) + 6 * var(--gap));
+  width: min(94vw, calc(7 * var(--tileMax) + 6 * var(--gap)));
+  margin: 0 auto 28px;
+  display: grid;
+  grid-template-rows: auto 1fr;   /* card then grid */
+  row-gap: 14px;
+}
+
+/* aligning the text card to the same width as the grid */
+.object-grid-card{
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 10px;
+}
+
+/* building a 7×3 square-tile grid; allow dense packing for consistent rows */
+#imageGrid{
+  display: grid;
+  grid-template-columns: repeat(7, minmax(var(--tileMin), var(--tileMax)));
+  gap: var(--gap);
+  grid-auto-flow: row dense;           /* preventing odd gaps if some tiles are missing */
+}
+.grid-item{
+  aspect-ratio: 1 / 1;                 /* keeping tiles perfectly square regardless of content */
+  border-radius: 8px;
+  overflow: hidden;
+  display:flex; align-items:center; justify-content:center;
+}
+.grid-item img{ width:100%; height:100%; object-fit:contain; display:block; transition:transform .15s ease; }
+.grid-item img:hover{ transform:scale(1.04); }
+
+/* safety cap: ensuring we never show more than 21 tiles (7×3) */
+#imageGrid > :nth-child(n+22){ display:none; }
+
+/* ============================================================================
+   CATEGORY SELECTOR (vertical list of buttons to filter grid)
+   ============================================================================ */
+.category-selector {
+  position: absolute;
+  top: 120px;                    /* aligning vertically with the text card */
+  right: -8rem;                  /* tucking the list slightly outside to the right of the grid */
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  background: none; border: none; box-shadow: none; padding: 0; min-width: auto;
+}
+
+.category-btn {
+  all: unset;                   /* removing default button styles (border, background, etc.) */
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: #4b4743;
+  padding: 4px 6px;
+  letter-spacing: -0.01em;
+  transition: color .2s ease, transform .15s ease;
+}
+
+.category-btn:hover {
+  color: #000;
+  transform: translateX(2px);   /* nudging right on hover for a tactile feel */
+}
+
+.category-btn.active {
+  color: #000;
+  font-weight: 500;
+  border-left: 1px solid #000;  /* minimal active indicator line */
+  padding-left: 8px;            /* spacing to make room for the indicator */
+}
+
+/* toning down further on small screens and moving selector inside the flow */
+@media (max-width: 900px) {
+  .category-selector {
+    right: 1rem;
+    top: 60px;
+  }
+  .category-btn {
+    font-size: 13px;
+  }
+}
+
+
+/* mobile: stacking layout and reducing columns */
+.object-grid-step{ gap:10px; padding:0 12px; }
+@media (max-width: 980px){
+  .object-grid-step .grid-wrapper{
+    --tileMax: 120px;
+    width: 94vw;
+  }
+  .category-selector{
+    position: static;           /* letting buttons sit above the grid on small screens */
+    margin-top: 8px;
+    align-self: start;
+  }
+  #imageGrid{
+    grid-template-columns: repeat(3, minmax(var(--tileMin), 1fr)); /* collapsing to 3 columns on narrow widths */
+  }
+  #imageGrid > :nth-child(n+22){ display:none; } /* still capping at 21 */
+}
+
+.image-grid{margin-top: 54px;}
+
+
+/* grid tooltip */
+/* tooltip (subtle, editorial; positioned globally by js near the cursor) */
+#gridTooltip{
+  position: fixed;              /* following cursor regardless of which container scrolls */
+  display: none;
+  pointer-events: none;
+  max-width: 280px;
+  padding: 12px 14px;
+  border-radius: 10px;
+
+  background: rgba(32, 33, 34, .92);     /* charcoal with high contrast against page */
+  color: #F6F3EF;                        /* matching page ivory tint */
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 8px 24px rgba(0,0,0,.24);
+  z-index: 99999;
+
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 12.5px;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+}
+
+#gridTooltip .tt-title{
+  font-family: "EB Garamond", Garamond, serif;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  color: #fff;
+  margin: 0 0 4px;
+}
+
+#gridTooltip .tt-title a{
+  color: inherit;
+  text-decoration: none;
+}
+#gridTooltip .tt-title a:hover{ border-bottom-color: #fff; }
+
+#gridTooltip .tt-row{
+  opacity: .92;
+  margin-top: 2px;
+}
+
+
+
+/* ============================================================================
+   STICKY UP ARROW
+   ===========================================================================*/
+.sticky-up-arrow{
+  position:fixed; right:32px; bottom:32px; z-index:1000; display:flex; align-items:center; justify-content:center;
+  border:2px solid #d0d0d0; background:rgba(248,248,247,.75); border-radius:50%; width:54px; height:54px;
+  padding:10px; cursor:pointer; color:#1d2328; font-size:32px; opacity:0; pointer-events:none; transition:all .3s ease; box-shadow:0 2px 12px rgba(0,0,0,.07);
+  /* pinning the control to the viewport corner and hiding it until scroll threshold is passed */
+}
+.sticky-up-arrow.visible{ opacity:.7; pointer-events:auto; }
+.sticky-up-arrow:hover{ opacity:1; transform:translateY(-2px); }
+
+/* ============================================================================
+   FOOTER (About)
+   ===========================================================================*/
+.site-footer{
+  background:#E4E1DD; border-top:1px solid #d0d0d0; margin-top:0;
+}
+.footer-inner{
+  max-width:min(92rem, 92vw); margin: 20px auto; padding:48px 24px 72px;
+  display:grid; grid-template-columns:1.2fr .8fr; gap:32px; align-items:end;
+}
+.footer-text h2{
+  margin:0 0 12px; font-family:"Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight:500; font-size:24px; color:#1a1a1a; letter-spacing:-.02em;
+}
+.footer-text p{
+  margin:0 0 16px; max-width:65ch; color:#2a2a2a; font-weight:400; letter-spacing:-.01em; line-height:1.6;
+}
+.footer-meta{ margin-top:8px; }
+.footer-text a{
+  color:#3a3a3a; text-decoration:none; border-bottom:1px solid #8a8a8a; transition:all .2s ease; font-weight:500;
+}
+.footer-text a:hover{ color:#1a1a1a; border-bottom-color:#1a1a1a; }
+.footer-figure{ margin:-40px 0 0; display:flex; justify-content:flex-end; align-items:flex-end; }
+.footer-figure img{
+  width:100%; height:auto; max-width:clamp(220px, 26vw, 360px); max-height:clamp(130px, 22vh, 260px);
+  object-fit:contain; filter:drop-shadow(0 1px 2px rgba(0,0,0,.08));
+}
+@media (max-width:900px){
+  .footer-inner{ grid-template-columns:1fr; }
+  .footer-figure{ justify-content:center; margin-top:8px; }
+  .footer-figure img{ max-width:clamp(220px, 60vw, 360px); max-height:240px; }
+}
+
+/* ============================================================================
+   TREEMAP: responsive stage + SVG + tooltip
+   ===========================================================================*/
+
+/* the sticky viewport already sits at top:0; this layer stacks treemap content inside it */
+.treemap-layer{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  background:#f6f3ef; /* matching page background for seamless look */
+  z-index: 3;
+}
+
+/* hiding the treemap layer completely when not active so it doesn’t interfere with focus or hit-testing */
+.treemap-layer[hidden]{ display:none !important; }
+
+/* when treemap is visible, hiding normal step content if applicable */
+.scrolly-viewport.show-treemap .steps-layer{ display:none; }
+
+
+
+.treemap-section { position: relative; z-index: 20; }
+
+/* making the treemap section sticky so users can interact without accidental page scroll */
+.treemap-viewport{
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* anchor for scroll-margin if you need precise “snap” positions (kept 0 here) */
+#treemap-top {
+  scroll-margin-top: 0px; /* no offset; aligning exactly with top */
+}
+
+/* compact control row above treemap */
+.treemap-controls{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 6px 0 10px;
+}
+@media (max-width: 720px){
+  .treemap-controls{ flex-wrap: wrap; }
+}
+
+/* chip showing current zoom path; dashed border gives a stitched vibe */
+.zoom-card{
+  display: inline-block;
+  padding: 8px 12px;
+  background: #efece4;
+  color: #2f3e46;
+  border: 1px dashed rgba(47,62,70,.35);
+  border-radius: 3px;
+  font-family: "PT Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 13px;
+}
+.zoom-title{ white-space: nowrap; }
+
+/* back button to reset zoom */
+.back-to-all{
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: #323435;
+  color: #fff;
+  font-family: "PT Mono", ui-monospace, Menlo, Consolas, monospace;
+  letter-spacing: .2px;
+  font-size: 13px;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 3px rgba(0,0,0,.08);
+}
+.back-to-all:hover{ filter: brightness(1.1); }
+
+/* toggling an inert state in js via .is-ghost */
+.is-ghost{ visibility: hidden; opacity: 0; pointer-events: none; }
+
+/* the treemap visual container fills the sticky viewport; details panel positions relative to this */
+.treemap-stage {
+  position: relative;
+  width: 100%;
+  display: block;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: visible;
+
+  /* letting the stage expand to fill remaining viewport height in the sticky column */
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* keeping D3’s original aspect ratio while still ensuring a minimum footprint */
+#step-treemap .treemap-stage {
+  aspect-ratio: 1000 / 520;
+  height: auto !important;
+  min-height: 520px;
+}
+
+
+/* svg stretches to the stage size set above */
+#treemap-svg.treemap {
+  display: block;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* global treemap tooltip following the pointer (outside scroller) */
+.treemap-tooltip{
+  position: fixed;
+  display: none;
+  pointer-events: none;
+  max-width: 320px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: #303537;
+  color: #F8F8F8;
+  box-shadow: 0 6px 20px rgba(0,0,0,.45);
+  font-family: "PT Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.35;
+  z-index: 99999;
+}
+
+/* labels rendered via foreignObject inside the svg */
+.family-labels-html{
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(8px, 0.7vw, 10px);
+  color: #181818;
+  white-space: normal;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.80);
+  padding: 2px 5px;
+  border-radius: 3px;
+  display: inline-block;
+  border: 1px solid rgba(42, 42, 42, 0.1);
+  font-weight: 300;
+  letter-spacing: -0.005em;
+  backdrop-filter: blur(2px);
+}
+.leaf-html{
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(7px, 0.6vw, 9px);
+  line-height: 1.2;
+  color: #ffffff;
+  pointer-events: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 300;
+  letter-spacing: -0.005em;
+  opacity: 1;
+}
+.leaf-fo{ pointer-events: none; }
+
+@media (max-width: 780px){
+  .family-labels-html { 
+    font-size: 9px;
+    font-weight: 400;
+  }
+  .leaf-html { 
+    font-size: 0;
+    opacity: 0;
+  }
+  /* showing leaf labels only on tap for small screens to reduce clutter */
+  .leaf-fo:active .leaf-html,
+  .leaf-fo.touched .leaf-html { 
+    font-size: 8px;
+    opacity: 1;
+    line-height: 1.2;
+  }
+}
+
+/* giving a minimum treemap height on small devices */
+@media (max-width: 820px) {
+  .treemap-stage { min-height: 45vh; }
+}
+
+/* ============================================================================
+   DETAILS PANEL (overlay that matches the SVG footprint)
+   ===========================================================================*/
+#details.details-panel{
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  margin: 0; padding: 0; overflow-y: auto;
+  background: linear-gradient(180deg, #faf8f5 0%, #f6f3ef 100%);
+  border: 1px solid rgba(139, 115, 85, 0.2);
+  box-sizing: border-box;
+  /* covering the treemap stage exactly so the panel and svg share boundaries */
+}
+.details-header{
+  position: sticky; top: 0;                 /* keeping header controls visible while list scrolls */
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px; margin: 0;
+  background: linear-gradient(180deg, #f8f6f1 0%, #f3f0eb 100%);
+  border-bottom: 1px solid rgba(139, 115, 85, 0.15);
+  box-shadow: 0 1px 2px rgba(139, 115, 85, 0.08);
+  z-index: 20;
+}
+.details-close{
+  background: none; border: none; margin: 0; padding: 6px 10px;
+  font-size: 24px; line-height: 1; cursor: pointer; color: #666; border-radius: 4px; transition: background-color 0.15s ease;
+}
+.details-close:hover{ background-color: #f0f0f0; }
+.details-title{
+  margin: 0; font-weight: 600; font-size: 20px; color: #3a2e20; letter-spacing: -0.02em;
+}
+.details-subtitle{
+  position: sticky; top: 68px;             /* keeping the group label visible just below header */
+  margin: 0; padding: 10px 16px;
+  background: linear-gradient(180deg, #f3f0eb 0%, #ede9e2 100%);
+  color: #5a4a35; font-size: 14px; font-weight: 500; border-bottom: 1px solid rgba(139, 115, 85, 0.2);
+  z-index: 15;
+}
+.details-list{ margin: 0; padding: 8px 16px 16px 16px; list-style: none; }
+.details-item{
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0; border-bottom: 1px dashed #9a9a91;
+}
+.details-thumb{
+  width: 100px; height: 100px; object-fit: cover; border-radius: 3px; flex: 0 0 auto; box-shadow: 0 1px 2px rgba(0,0,0,.12);
+  transition: opacity .25s ease; display: block; margin-right: 20px;
+}
+.details-placeholder{
+  width: 100px; height: 100px; flex-shrink: 0; margin-right: 20px;
+  background: linear-gradient(135deg, #f8f6f1 0%, #f3f0eb 50%, #ede9e2 100%);
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(139, 115, 85, 0.03) 1px, transparent 1px),
+    radial-gradient(circle at 75% 75%, rgba(139, 115, 85, 0.02) 1px, transparent 1px),
+    radial-gradient(circle at 50% 0%, rgba(139, 115, 85, 0.01) 1px, transparent 1px);
+  background-size: 20px 20px, 30px 30px, 40px 40px;
+  border-radius: 3px; 
+  display: flex; align-items: center; justify-content: center; 
+  color: rgba(139, 115, 85, 0.6);
+  transition: background-color 0.2s;
+  border: 1px solid rgba(139, 115, 85, 0.25);
+}
+.details-placeholder svg { width: 32px; height: 32px; }
+
+/* making the treemap step fill a generous area inside the sticky viewport */
+#step-treemap .viz-wrap{
+  width: min(1400px, 98vw);
+  margin: 0 auto;
+  padding: 0 12px;
+}
+
+.treemap-section .treemap-stage{
+  height: clamp(520px, 66vh, 820px);
+  min-height: 620px;   /* providing a safety minimum for short viewports */
+}
+
+#treemap-svg.treemap{
+  width: 100%;
+  height: 100%;  /* filling the stage size defined above */
+}
+
+/* giving a little extra height on tall desktop screens */
+@media (min-height: 950px){
+  #step-treemap .treemap-stage{ height: 72vh; }
+}
+
+
+/* treemap heading hierarchy (garamond title + editorial hints) */
+.section-title{
+  font-family: "EB Garamond", Garamond, serif;
+  font-weight: 500;
+  font-size: clamp(34px, 4vw, 44px);
+  line-height: 1.12;
+  color: #0a0a0a;
+  letter-spacing: -0.01em;
+  margin: 0 0 6px 0;
+}
+
+.viz-hint{
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: clamp(16px, 2.2vw, 20px);
+  font-weight: 400;
+  color: #525252;
+  letter-spacing: -0.005em;
+  margin: 10px 0 6px;
+}
+
+.viz-hint-small{
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: clamp(13px, 1.8vw, 15px);
+  font-weight: 400;
+  color: #6a6a6a;
+  letter-spacing: -0.005em;
+  margin: 0 0 16px;
+}
