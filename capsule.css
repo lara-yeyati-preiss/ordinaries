@@ -61,9 +61,10 @@ body{
 }
 
 .section-title{
-  font-size:clamp(28px, 3.2vw, 36px);
+  font-size:clamp(32px, 4vw, 44px);
   line-height:1.12;
   margin:34px 0 6px;
+  font-weight:500;
 }
 
 .capsule-subtitle{

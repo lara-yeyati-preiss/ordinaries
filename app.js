@@ -244,11 +244,24 @@ function renderStepContent(step) {
     var img = c.image || "";    // optional image
     var alt = c.alt || "";      // alt text for accessibility
 
-    // building html string dynamically (kept simple and self-contained)
+    // If this is the outro card, add the button below
+    if (step.id === "outro") {
+      // Wrap card and button in a vertical container
+      return (
+        '<div class="outro-card-wrap" style="display:flex;flex-direction:column;align-items:center;">' +
+          '<div class="prelude-card">' +
+            '<p>' + txt + '</p>' +
+            (img ? '<img class="card-image" src="' + img + '" alt="' + alt + '">' : "") +
+          '</div>' +
+          '<button id="outroExploreBtn" class="btn btn-dark outro-btn-spacing" style="margin-top:3.5em;">Explore other objects by use</button>' +
+        '</div>'
+      );
+    }
+
+    // Otherwise, render as usual
     return (
       '<div class="prelude-card">' +
         '<p>' + txt + '</p>' +
-        // including <img> tag only if image path is defined
         (img ? '<img class="card-image" src="' + img + '" alt="' + alt + '">' : "") +
       '</div>'
     );
@@ -858,6 +871,17 @@ function init() {
   setupCategoryButtons();
   loadCategory(0);           // showing Samplers immediately
   setupHeroObjectsButton();
+  setupOutroExploreButton();
+// Wiring the "Explore other objects by use" button in the outro card to scroll to treemap
+function setupOutroExploreButton() {
+  const btn = document.getElementById("outroExploreBtn");
+  if (!btn) return;
+  btn.removeAttribute("disabled");
+  btn.setAttribute("aria-disabled", "false");
+  btn.addEventListener("click", () => {
+    scrollToTreemapEnd("instant");
+  });
+}
 
   setTrackHeight();
   setupScrollListener();
