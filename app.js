@@ -85,7 +85,7 @@ const config = {
       type: "card",
       content: {
         text:
-          "Each one a pattern of actions forming the cartography of the ordinary.",
+          "Patterns of action forming the cartography of the ordinary.",
       },
     },
 
