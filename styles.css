@@ -83,7 +83,7 @@ body {
   color: #2b2b2b;
 }
 .scroll-indicator {
-  margin-top: 2rem;
+  margin-top: 4rem;
   display: flex;
   flex-direction: column;                 /* stacking “scroll” label above chevron */
   align-items: center;
@@ -99,7 +99,7 @@ body {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: .1em;
-  color: #131313;
+  color: #080808;
 }
 
 /* === HERO actions (buttons under subtitle) === */
@@ -386,38 +386,81 @@ body {
 .sticky-up-arrow.visible{ opacity:.7; pointer-events:auto; }
 .sticky-up-arrow:hover{ opacity:1; transform:translateY(-2px); }
 
-/* ============================================================================
-   FOOTER (About)
-   ===========================================================================*/
-.site-footer{
-  background:#E4E1DD; border-top:1px solid #d0d0d0; margin-top:0;
+/* ===== Modal ===== */
+.modal[hidden] { display: none !important; }
+.modal {
+  position: fixed; inset: 0; z-index: 10000;
+  display: grid; place-items: center;
 }
-.footer-inner{
-  max-width:min(92rem, 92vw); margin: 20px auto; padding:48px 24px 72px;
-  display:grid; grid-template-columns:1.2fr .8fr; gap:32px; align-items:end;
+
+.modal-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(18, 18, 18, .35);
+  backdrop-filter: blur(2px);
 }
-.footer-text h2{
+
+.modal-card {
+  position: relative;
+  width: min(860px, 92vw);
+  background: #fff;
+  border: 1px solid #eceae7;
+  border-radius: 10px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.18);
+padding: clamp(48px, 8vw, 72px);
+animation: modalIn .18s ease-out;
+}
+
+@keyframes modalIn { from { transform: translateY(6px); opacity: 0; } to { transform:none; opacity:1; } }
+
+.modal-close {
+  position: absolute; top: 8px; right: 10px;
+  border: 0; background: transparent; font-size: 28px; line-height: 1;
+  color: #666; cursor: pointer; padding: 4px 8px; border-radius: 6px;
+}
+.modal-close:hover { background: #f3f3f3; }
+
+.modal-body {
+  display: grid;
+  grid-template-columns: 1.2fr .8fr;
+  align-items: center; /* centers text + image vertically */
+  gap: clamp(16px, 3vw, 28px);
+}
+
+.modal-text h2{
   margin:0 0 12px; font-family:"Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight:500; font-size:24px; color:#1a1a1a; letter-spacing:-.02em;
 }
-.footer-text p{
-  margin:0 0 16px; max-width:65ch; color:#2a2a2a; font-weight:400; letter-spacing:-.01em; line-height:1.6;
+.modal-text p{
+  margin:0 0 16px; max-width:70ch; color:#2a2a2a; font-weight:400; letter-spacing:-.01em; line-height:1.6;
 }
-.footer-meta{ margin-top:8px; }
-.footer-text a{
-  color:#3a3a3a; text-decoration:none; border-bottom:1px solid #8a8a8a; transition:all .2s ease; font-weight:500;
+.modal-text a{
+  color:#3a3a3a; text-decoration:none; border-bottom:1px solid #8a8a8a; transition:.2s;
 }
-.footer-text a:hover{ color:#1a1a1a; border-bottom-color:#1a1a1a; }
-.footer-figure{ margin:-40px 0 0; display:flex; justify-content:flex-end; align-items:flex-end; }
-.footer-figure img{
-  width:100%; height:auto; max-width:clamp(220px, 26vw, 360px); max-height:clamp(130px, 22vh, 260px);
-  object-fit:contain; filter:drop-shadow(0 1px 2px rgba(0,0,0,.08));
+.modal-text a:hover{ color:#1a1a1a; border-bottom-color:#1a1a1a; }
+
+.modal-figure { display:flex; justify-content:flex-end; }
+.modal-figure img {
+  max-width: clamp(160px, 18vw, 240px); /* smaller max size */
+  max-height: clamp(100px, 18vh, 180px);
+  object-fit: contain;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,.08));
 }
-@media (max-width:900px){
-  .footer-inner{ grid-template-columns:1fr; }
-  .footer-figure{ justify-content:center; margin-top:8px; }
-  .footer-figure img{ max-width:clamp(220px, 60vw, 360px); max-height:240px; }
+
+/* On mobile: stack vertically and center nicely */
+@media (max-width: 860px) {
+  .modal-body {
+    grid-template-columns: 1fr;
+    align-items: center;
+    text-align: center;
+  }
+  .modal-figure {
+    justify-content: center;
+    margin-top: 1rem;
+  }
 }
+/* Optional: prevent background scroll while modal open */
+body.modal-open { overflow: hidden; }
+
 
 /* ============================================================================
    TREEMAP: responsive stage + SVG + tooltip

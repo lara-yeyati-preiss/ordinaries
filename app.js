@@ -20,7 +20,7 @@ const config = {
       type: "card",
       content: {
         text:
-          "The things people handled every day—what they crafted, traded, and cared for—open a window onto what the world looked like, and how it took shape.",
+          "The things people handled every day—what they crafted, traded, and cared for—open a window onto what their world looked like, and how it took shape.",
         image: "assets/treesandhouse.png",
         alt: "Sampler house and trees motif",
       },
@@ -45,9 +45,9 @@ const config = {
       id: "sampler-single",
       type: "sampler-intro-single",
       content: {
-        text: "These embroidered works displayed skill, patience, and virtue. They mirrored the ideals of femininity in the new republic—training women to embody virtue through education, morality, and domestic skill.",
+        text: "These embroidered works displayed skill, patience, and diligence. They mirrored the ideals of femininity in the new republic—training women to embody virtue through education, morality, and domestic skill.",
         image: "assets/samplers/edanmdm:nmah_1414445.png",
-        alt: "Sampler showing skill, patience, and virtue."
+        alt: "Sampler showing skill, patience, and diligence."
       }
     },
     // compartment step that crossfades between sampler images with a label and progress bar
@@ -76,7 +76,7 @@ const config = {
       type: "object-grid",
       content: {
         text:
-          "These rituals and repetitions extended across other habits—each one revealing a glimpse of how life was imagined and ordered.",
+          "These rituals and repetitions extended across other habits—each one revealing glimpses of how life was imagined and ordered.",
       },
     },
     // outro card
@@ -150,7 +150,6 @@ const PER_STEP_VH = {
   "sampler-compartment": 220, // even slower scroll for compartment scene
   "treemap": 220              // extra long for user interaction and exploration
 };
-const FOOTER_VH = 120;         // extra runway for footer to fully appear at the end
 
 
 // === building a normalized scroll timeline for every segment ===============
@@ -185,8 +184,8 @@ function setTrackHeight() {
   const track = document.querySelector(".scrolly-track");
   // summing all segment virtual heights
   const total = state.segments.reduce((a, s) => a + s.h, 0);
-  // setting the track’s physical height so all scenes + footer can be scrolled
-  if (track) track.style.minHeight = `${total + FOOTER_VH}vh`;
+  // setting the track’s physical height so all scenes can be scrolled
+  if (track) track.style.minHeight = `${total}vh`;
 }
 
 
@@ -221,6 +220,50 @@ function setupHeroObjectsButton() {
   // wiring a click → direct scroll into treemap
   btn.addEventListener("click", () => {
     scrollToTreemapEnd("instant"); // jumping immediately into the visualization
+  });
+}
+
+// === About modal: open/close + Esc + backdrop + basic focus trap ===
+function setupAboutModal() {
+  const modal   = document.getElementById('aboutModal');
+  const openBtn = document.getElementById('aboutBtn');
+  if (!modal || !openBtn) return;
+
+  const backdrop = modal.querySelector('.modal-backdrop');
+  const closeEls = modal.querySelectorAll('[data-close]');
+
+  let lastFocus = null;
+  const focusables = () =>
+    modal.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])');
+
+  const open = () => {
+    lastFocus = document.activeElement;
+    modal.removeAttribute('hidden');
+    document.body.classList.add('modal-open');
+    const f = focusables()[0] || modal;
+    if (f && f.focus) f.focus({ preventScroll: true });
+  };
+
+  const close = () => {
+    modal.setAttribute('hidden', '');
+    document.body.classList.remove('modal-open');
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  };
+
+  openBtn.addEventListener('click', (e) => { e.preventDefault(); open(); });
+  backdrop.addEventListener('click', close);
+  closeEls.forEach(el => el.addEventListener('click', close));
+
+  // Esc to close + simple focus trap inside the modal
+  modal.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { e.preventDefault(); close(); return; }
+    if (e.key !== 'Tab') return;
+
+    const f = Array.from(focusables());
+    if (!f.length) return;
+    const i = f.indexOf(document.activeElement);
+    if (e.shiftKey && (i <= 0 || i === -1)) { e.preventDefault(); f[f.length - 1].focus(); }
+    else if (!e.shiftKey && (i === f.length - 1)) { e.preventDefault(); f[0].focus(); }
   });
 }
 
@@ -603,19 +646,6 @@ function setupHeroDownArrow() {
   });
 }
 
-// wiring hero buttons (enabling only “what is this?” to jump to footer end)
-function setupHeroButtons() {
-  const container = document.getElementById("scrollContainer");
-  const btnAbout = document.getElementById("heroBtnAbout");
-  if (btnAbout && container) {
-    btnAbout.addEventListener("click", () => {
-      const maxTop = container.scrollHeight - container.clientHeight;
-      // jumping instantly to the very end of the internal scroller (revealing footer)
-      container.scrollTop = maxTop;
-    });
-  }
-}
-
 // enabling the persistent “up” arrow button to scroll back to top and toggle its visibility
 function enableUpArrow() {
   const btn = document.getElementById("upArrow");
@@ -915,6 +945,7 @@ function init() {
   setupCategoryButtons();
   loadCategory(0);           // showing Samplers immediately
   setupHeroObjectsButton();
+  setupAboutModal();
 // Wiring the "Explore other objects by use" button in the outro card to scroll to treemap
 
   setTrackHeight();

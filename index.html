@@ -45,12 +45,12 @@
             <div class="hero-actions">
               <button class="btn btn-dark" id="heroBtnObjects">Objects by Use</button>
               <a href="time-capsules.html" class="btn btn-dark" id="heroBtnTimeCapsules">Time Capsules</a>
-              <button class="btn btn-outline" id="heroBtnAbout">What is this?</button>
+              <button id="aboutBtn" class="btn btn-outline">What is this?</button>
             </div>
 
             <!-- scroll down indicator that takes you to first scene -->
             <button class="scroll-indicator" id="scrollIndicator" aria-label="Scroll to begin">
-              <span class="scroll-text">Scroll</span>
+              <span class="scroll-text">Scroll to explore</span>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#525252" stroke-width="2" aria-hidden="true">
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
@@ -58,6 +58,34 @@
           </div>
         </section>
 
+        <!-- Modal -->
+<div id="aboutModal" class="modal" role="dialog" aria-modal="true"
+     aria-labelledby="about-title" aria-describedby="about-desc" hidden>
+  <div class="modal-backdrop" data-close></div>
+
+  <div class="modal-card" role="document">
+    <button class="modal-close" aria-label="Close" data-close>×</button>
+
+    <div class="modal-body">
+      <div class="modal-text">
+        <h2 id="about-title">About this project</h2>
+        <p id="about-desc"><em>The Ordinaries</em> examines the American Revolutionary era (1765–1783)
+          through the material traces of everyday life, drawing on objects from the Smithsonian’s
+          collections — from cooking pots and card games to stitched samplers and nursing bottles.</p>
+
+        <div class="footer-meta">
+          <span class="data-badge">
+            Data source: <a href="https://www.si.edu/openaccess" target="_blank" rel="noopener">Smithsonian Open Access</a>
+          </span>
+        </div>
+      </div>
+
+      <figure class="modal-figure" aria-hidden="true">
+        <img src="assets/ordinaries.png" alt="" role="presentation">
+      </figure>
+    </div>
+  </div>
+</div>
         <!-- creating an empty div used as the anchor for the first scrolling step -->
         <div id="firstStepAnchor"></div>
 
@@ -67,31 +95,6 @@
 
     </div><!-- closing the scrolly track -->
   </div><!-- closing the scrollContainer -->
-
-      <!-- =========================
-           FOOTER (About / sources)
-           it scrolls in after the treemap
-           ========================= -->
-      <footer id="about" class="site-footer" aria-labelledby="about-title">
-        <div class="footer-inner">
-          <div class="footer-text">
-            <h2 id="about-title">About this project</h2>
-            <p><em>The Ordinaries</em> looks at the American Revolutionary era (1765–1783) through the
-              material traces of everyday life, drawing on objects from the Smithsonian’s collections —
-              from cooking pots and card games to stitched samplers and nursing bottles.</p>
-
-            <div class="footer-meta">
-              <span class="data-badge">
-                Data source: <a href="https://www.si.edu/openaccess" target="_blank" rel="noopener">Smithsonian Open Access</a>
-              </span>
-            </div>
-          </div>
-
-          <figure class="footer-figure" aria-hidden="true">
-            <img src="assets/flowers.png" alt="" role="presentation">
-          </figure>
-        </div>
-      </footer>
   <!-- defining the up-arrow button that brings the user back to the top (JS toggles visibility) -->
   <button class="sticky-up-arrow" id="upArrow" aria-label="Scroll to top">
     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
