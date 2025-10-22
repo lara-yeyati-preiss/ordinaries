@@ -9,7 +9,7 @@ const config = {
       type: "card",
       content: {
         text:
-          "History isn't only carved in bronze and stone. It lives in the fragments of the everyday—in the small repetitions that built a life, and then, a world.",
+          "History isn't only carved in bronze and stone. It survives in the fragments of the everyday—in the small habits that built a life, and then, a world.",
         image: "assets/littletree.png",
         alt: "A small embroidered tree motif",
       },
@@ -20,7 +20,7 @@ const config = {
       type: "card",
       content: {
         text:
-          "The things people handled every day—what they cooked, crafted, traded, and cared for—show what the world looked like, and how it took shape.",
+          "The things people handled every day—what they crafted, traded, and cared for—open a window onto what the world looked like, and how it took shape.",
         image: "assets/treesandhouse.png",
         alt: "Sampler house and trees motif",
       },
@@ -31,13 +31,24 @@ const config = {
       type: "sampler-intro",
       content: {
         text:
-          "In Revolutionary-era America, young women stitched samplers—linen squares used to practice letters, numbers, and the discipline of the hand. These embroidered works displayed skill, patience, and virtue.",
+          "In Revolutionary-era America, young women stitched samplers—linen squares used to practice letters, numbers, and the discipline of the hand.",
         samplers: [
           "assets/samplers/edanmdm:nmah_639698.png",
           "assets/samplers/edanmdm:nmah_649894.png",
           "assets/samplers/edanmdm:nmah_1134702.png",
         ],
       },
+    },
+
+    // new single-image sampler-intro style step (now placed after sampler-intro)
+    {
+      id: "sampler-single",
+      type: "sampler-intro-single",
+      content: {
+        text: "These embroidered works displayed skill, patience, and virtue. They mirrored the ideals of femininity in the new republic—training women to embody virtue through education, morality, and domestic skill.",
+        image: "assets/samplers/edanmdm:nmah_1414445.png",
+        alt: "Sampler showing skill, patience, and virtue."
+      }
     },
     // compartment step that crossfades between sampler images with a label and progress bar
     {
@@ -50,22 +61,22 @@ const config = {
           { image: "assets/samplers/edanmdm:nmah_643873.png",  label: "Alphabets" },
           { image: "assets/samplers/edanmdm:nmah_644829.png",  label: "Alphabets" },
           { image: "assets/samplers/edanmdm:nmah_1139039.png", label: "Alphabets" },
-          { image: "assets/samplers/edanmdm:nmah_1341531.png", label: "Houses" },
           { image: "assets/samplers/edanmdm:nmah_1093871.png", label: "Houses" },
+          { image: "assets/samplers/edanmdm:nmah_1341531.png", label: "Houses" },
           { image: "assets/samplers/edanmdm:nmah_649885.png",  label: "Houses" },
           { image: "assets/samplers/edanmdm:nmah_639698.png",  label: "Verses" },
-          { image: "assets/samplers/edanmdm:nmah_639677.png",  label: "Verses" },
           { image: "assets/samplers/edanmdm:nmah_1141751.png", label: "Verses" },
         ],
       },
     },
+
     // object grid step (categories rotate as you scroll within the step)
     {
       id: "rituals",
       type: "object-grid",
       content: {
         text:
-          "These rituals and repetitions extended across other habits—how people dressed, wrote, cooked, played.",
+          "These rituals and repetitions extended across other habits—each one revealing a glimpse of how life was imagined and ordered.",
       },
     },
     // outro card
@@ -134,9 +145,9 @@ function localProgress(t, stepId) {
 // === configuring virtual heights for steps (measured in viewport heights) ===
 
 // defining how long each scene should last in scroll distance
-const DEFAULT_VH = 70; // standard scene length
+const DEFAULT_VH = 90; // standard scene length
 const PER_STEP_VH = {
-  "sampler-compartment": 140, // extended duration for slow cross-fade animation
+  "sampler-compartment": 220, // even slower scroll for compartment scene
   "treemap": 220              // extra long for user interaction and exploration
 };
 const FOOTER_VH = 120;         // extra runway for footer to fully appear at the end
@@ -244,16 +255,12 @@ function renderStepContent(step) {
     var img = c.image || "";    // optional image
     var alt = c.alt || "";      // alt text for accessibility
 
-    // If this is the outro card, add the button below
+    // If this is the outro card, render only the card (no button)
     if (step.id === "outro") {
-      // Wrap card and button in a vertical container
       return (
-        '<div class="outro-card-wrap" style="display:flex;flex-direction:column;align-items:center;">' +
-          '<div class="prelude-card">' +
-            '<p>' + txt + '</p>' +
-            (img ? '<img class="card-image" src="' + img + '" alt="' + alt + '">' : "") +
-          '</div>' +
-          '<button id="outroExploreBtn" class="btn btn-dark outro-btn-spacing" style="margin-top:3.5em;">Explore other objects by use</button>' +
+        '<div class="prelude-card">' +
+          '<p>' + txt + '</p>' +
+          (img ? '<img class="card-image" src="' + img + '" alt="' + alt + '">' : "") +
         '</div>'
       );
     }
@@ -317,6 +324,43 @@ function renderStepContent(step) {
       '</div>'
     );
   }
+
+    // rendering the single-image compartment step
+    if (t === "compartment-single") {
+      var cs = step.content || {};
+      var img = cs.image || "";
+      var alt = cs.alt || "Sampler";
+      var txt = cs.text || "";
+      return (
+        '<div class="compartment-container">' +
+          '<div class="sampler-viewport">' +
+            '<div class="viewport-image" style="opacity:1;">' +
+              '<img src="' + img + '" alt="' + alt + '" />' +
+            '</div>' +
+          '</div>' +
+          '<div class="prelude-card compartment-card">' +
+            '<p>' + txt + '</p>' +
+          '</div>' +
+        '</div>'
+      );
+    }
+      // rendering the single-image sampler-intro style step (card above image)
+      if (t === "sampler-intro-single") {
+        var cs = step.content || {};
+        var img = cs.image || "";
+        var alt = cs.alt || "Sampler";
+        var txt = cs.text || "";
+        return (
+          '<div class="sampler-intro-step">' +
+            '<div class="prelude-card sampler-intro-card"><p>' + txt + '</p></div>' +
+            '<div class="sampler-gallery">' +
+              '<div class="sampler-item visible" data-index="0">' +
+                '<img src="' + img + '" alt="' + alt + '">' +
+              '</div>' +
+            '</div>' +
+          '</div>'
+        );
+      }
 
   // rendering the object grid step with category buttons and an empty grid root
   if (t === "object-grid") {
@@ -871,17 +915,7 @@ function init() {
   setupCategoryButtons();
   loadCategory(0);           // showing Samplers immediately
   setupHeroObjectsButton();
-  setupOutroExploreButton();
 // Wiring the "Explore other objects by use" button in the outro card to scroll to treemap
-function setupOutroExploreButton() {
-  const btn = document.getElementById("outroExploreBtn");
-  if (!btn) return;
-  btn.removeAttribute("disabled");
-  btn.setAttribute("aria-disabled", "false");
-  btn.addEventListener("click", () => {
-    scrollToTreemapEnd("instant");
-  });
-}
 
   setTrackHeight();
   setupScrollListener();

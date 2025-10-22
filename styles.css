@@ -64,7 +64,7 @@ body {
 }
 .hero-landing.hidden{ opacity:0; pointer-events:none; }
 .hero-inner{ width:100%; max-width:720px; padding:0 14px; text-align:center; margin:0 auto; display:flex; flex-direction:column; align-items:center; }
-.hero-title-row{ display:flex; flex-direction:column; align-items:center; gap:.15em; margin-bottom:14px; max-width:640px; margin-inline:auto; }
+.hero-title-row{ display:flex; flex-direction:column; align-items:center; gap:.15em; margin-bottom:12px; max-width:640px; margin-inline:auto; }
 .hero-title {
   font-family: 'EB Garamond', Garamond, serif;
   font-weight: 400;
@@ -76,9 +76,9 @@ body {
   cursor: default;
 }
 .hero-subtitle {
-  margin: .8rem auto 1.4rem;
+  margin: .2rem auto 1.4rem;
   max-width: 56ch;                       /* keeping readable line length */
-  font-size: clamp(1.18rem, 1.9vw, 1.32rem);
+  font-size: clamp(1.22rem, 2vw, 1.38rem);
   line-height: 1.45;
   color: #2b2b2b;
 }
@@ -144,7 +144,7 @@ body {
   display:flex; flex-direction:column; align-items:center; text-align:center; transition:opacity .6s ease;
 }
 .prelude-card p{ font-size:18px; line-height:1.65; color:#2f2f2f; letter-spacing:-.01em; }
-.card-image{ height:100px; width:auto; opacity:.7; margin-top:1em; display:block; }
+.card-image{ height:100px; width:auto; opacity:.7; margin-top:2em; display:block; }
 
 /* ============================================================================
    SAMPLER INTRO (image trio + text)
