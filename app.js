@@ -10,8 +10,8 @@ const config = {
       content: {
         text:
           "History isn't only carved in bronze and stone. It survives in the fragments of the everyday—in the small habits that built a life, and then, a world.",
-        image: "assets/littletree.png",
-        alt: "A small embroidered tree motif",
+        image: "assets/treesandhouse.png",
+        alt: "Sampler house and trees motif",
       },
     },
     // second intro card
@@ -21,8 +21,8 @@ const config = {
       content: {
         text:
           "The things people handled every day—what they crafted, traded, and cared for—open a window onto what their world looked like, and how it took shape.",
-        image: "assets/treesandhouse.png",
-        alt: "Sampler house and trees motif",
+        image: "assets/littletree.png",
+        alt: "A small embroidered tree motif",
       },
     },
     // sampler intro section showing three samplers
