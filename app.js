@@ -46,7 +46,7 @@ const config = {
       type: "sampler-intro-single",
       content: {
         text: "These embroidered works displayed skill, patience, and diligence. They mirrored the ideals of femininity in the new republic—training women to embody virtue through education, morality, and domestic skill.",
-        image: "assets/samplers/edanmdm:nmah_1414445.png",
+  image: "assets/edanmdm:nmah_639739-details.png",
         alt: "Sampler showing skill, patience, and diligence."
       }
     },
@@ -147,7 +147,8 @@ function localProgress(t, stepId) {
 // defining how long each scene should last in scroll distance
 const DEFAULT_VH = 90; // standard scene length
 const PER_STEP_VH = {
-  "sampler-compartment": 220, // even slower scroll for compartment scene
+  "sampler-compartment": 200, // even slower scroll for compartment scene
+  "rituals": 200,            // slower scroll for grid section
   "treemap": 220              // extra long for user interaction and exploration
 };
 
@@ -394,14 +395,14 @@ function renderStepContent(step) {
         var alt = cs.alt || "Sampler";
         var txt = cs.text || "";
         return (
-          '<div class="sampler-intro-step">' +
-            '<div class="prelude-card sampler-intro-card"><p>' + txt + '</p></div>' +
-            '<div class="sampler-gallery">' +
-              '<div class="sampler-item visible" data-index="0">' +
-                '<img src="' + img + '" alt="' + alt + '">' +
+            '<div class="sampler-intro-step" style="gap:1.2vh;">' +
+              '<div class="prelude-card sampler-intro-card" style="margin-bottom:7vh;margin-top:2vh;"><p>' + txt + '</p></div>' +
+              '<div class="sampler-gallery">' +
+                '<div class="sampler-item visible" data-index="0">' +
+                  '<img src="' + img + '" alt="' + alt + '" style="height:clamp(440px,44vh,600px);width:auto;max-width:99vw;object-fit:contain;display:block;">' +
+                '</div>' +
               '</div>' +
-            '</div>' +
-          '</div>'
+            '</div>'
         );
       }
 
